@@ -3,7 +3,7 @@
 name: Java CI
 # yamllint disable-line rule:truthy
 on:
-  push:
+  push: #run always
   pull_request:
     branches:
       - master
