@@ -4,9 +4,6 @@ name: Java CI
 # yamllint disable-line rule:truthy
 on:
   push:
-    branches:
-      - master
-      - release/*
   pull_request:
     branches:
       - master
@@ -39,6 +36,7 @@ jobs:
         os:
           - ubuntu-latest
           - windows-latest
+          - macos-latest
     env:
       JAVA_OPTS: -XX:+TieredCompilation -XX:TieredStopAtLevel=1
     steps:
