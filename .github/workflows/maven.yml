@@ -29,7 +29,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        java_version:
+        java_version: #rerun
           - "11"
           - "17"
           - "21"
