@@ -11,6 +11,7 @@ on:
     branches:
       - master
       - release/*
+  workflow_dispatch:
 jobs:
   yamllint:
     name: "\U0001F9F9 yamllint"
