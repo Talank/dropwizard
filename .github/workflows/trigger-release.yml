@@ -1,19 +1,11 @@
----
 # yamllint disable rule:comments rule:line-length
 name: Trigger Release
 # yamllint disable-line rule:truthy
 on:
   workflow_dispatch:
-    inputs:
-      releaseVersion:
-        description: Version of the next release
-        required: true
-      developmentVersion:
-        description: Version of the next development cycle (must end in "-SNAPSHOT")
-        required: true
 jobs:
   trigger-release:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     permissions:
       contents: write
     env:
@@ -41,12 +33,19 @@ jobs:
           git config --global author.email "${GITHUB_ACTOR}@users.noreply.github.com"
           git config --global author.name "${GITHUB_ACTOR}"
       - name: Prepare release
-        run: ./mvnw -V -B -ntp -Prelease -DreleaseVersion=${{ inputs.releaseVersion }} -DdevelopmentVersion=${{ inputs.developmentVersion }} release:prepare
+        run: ./mvnw -V -B -ntp -Prelease -DreleaseVersion=${{ inputs.releaseVersion }} -DdevelopmentVersion=${{ 
+          inputs.developmentVersion }} release:prepare
         env:
           MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
           MAVEN_GPG_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
       - name: Rollback on failure
-        if: failure()
+        if: always()
         run: |
           ./mvnw -B release:rollback -Prelease
           echo "You may need to manually delete the GitHub tag, if it was created."
+    strategy:
+      matrix:
+        os:
+          - ubuntu-latest
+          - ubuntu-24.04-arm
+      fail-fast: false
